@@ -1,7 +1,7 @@
 'use strict'
 const path = require('path')
 const config = require('../config')
-const ExtractTextPlugin = require('extract-text-webpack-plugin')
+const ExtractTextPlugin = require('C:/Users/Kaier/AppData/Local/Microsoft/TypeScript/2.9/node_modules/@types/extract-text-webpack-plugin')
 const packageConfig = require('../package.json')
 
 exports.assetsPath = function (_path) {
@@ -103,13 +103,13 @@ exports.createNotifierCallback = () => {
 
 
 // glob是webpack安装时依赖的一个第三方模块，还模块允许你使用 *等符号, 例如lib/*.js就是获取lib文件夹下的所有js后缀名的文件
-var glob = require('glob')
+var glob = require('C:/Users/Kaier/AppData/Local/Microsoft/TypeScript/2.9/node_modules/@types/glob')
 // 页面模板
-var HtmlWebpackPlugin = require('html-webpack-plugin')
+var HtmlWebpackPlugin = require('C:/Users/Kaier/AppData/Local/Microsoft/TypeScript/2.9/node_modules/@types/html-webpack-plugin')
 // 取得相应的页面路径，因为之前的配置，所以是src文件夹下的pages文件夹
 var PAGE_PATH = path.resolve(__dirname, '../src/pages')
 // 用于做相应的merge处理
-var merge = require('webpack-merge')
+var merge = require('C:/Users/Kaier/AppData/Local/Microsoft/TypeScript/2.9/node_modules/@types/webpack-merge')
 
 //多入口配置
 // 通过glob模块读取pages文件夹下的所有对应文件夹下的js后缀文件，如果该文件存在
