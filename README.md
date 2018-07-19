@@ -1,9 +1,21 @@
-# vue_multiple
-基于vue进行hybrid开发的多页应用:
-- [x] 多页构建
-- [ ] native通信
+# xcx_app_vue_mul
 
+> A Vue.js project
 
-注意.现在用的本地模式,因为文件最终还是放在app里面, 如果想要进行线上部署的话,注意看src/pages/test1/test1.js里面的写的注意事项;  
-包括了history模式,路由,资源路径等;  
-多页构建参考: https://blog.csdn.net/stiven_lu/article/details/80271012
+## Build Setup
+
+``` bash
+# install dependencies
+npm install
+
+# serve with hot reload at localhost:8080
+npm run dev
+
+# build for production with minification
+npm run build
+
+# build for production and view the bundle analyzer report
+npm run build --report
+```
+
+For a detailed explanation on how things work, check out the [guide](http://vuejs-templates.github.io/webpack/) and [docs for vue-loader](http://vuejs.github.io/vue-loader).

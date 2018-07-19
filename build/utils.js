@@ -1,7 +1,7 @@
 'use strict'
 const path = require('path')
 const config = require('../config')
-const ExtractTextPlugin = require('C:/Users/Kaier/AppData/Local/Microsoft/TypeScript/2.9/node_modules/@types/extract-text-webpack-plugin')
+const ExtractTextPlugin = require('extract-text-webpack-plugin')
 const packageConfig = require('../package.json')
 
 exports.assetsPath = function (_path) {
@@ -18,7 +18,8 @@ exports.cssLoaders = function (options) {
   const cssLoader = {
     loader: 'css-loader',
     options: {
-      sourceMap: options.sourceMap
+      sourceMap: options.sourceMap,
+      // importLoaders:2,
     }
   }
 
@@ -29,9 +30,16 @@ exports.cssLoaders = function (options) {
     }
   }
 
+  const px2remLoader = {
+    loader: 'px2rem-loader',
+    options:{
+      remUnit:75/2
+    }
+  }
+
   // generate loader string to be used with extract text plugin
   function generateLoaders (loader, loaderOptions) {
-    const loaders = options.usePostCSS ? [cssLoader, postcssLoader] : [cssLoader]
+    const loaders = options.usePostCSS ? [cssLoader] : [cssLoader,px2remLoader,postcssLoader]
 
     if (loader) {
       loaders.push({
@@ -100,16 +108,15 @@ exports.createNotifierCallback = () => {
   }
 }
 
-
-
 // glob是webpack安装时依赖的一个第三方模块，还模块允许你使用 *等符号, 例如lib/*.js就是获取lib文件夹下的所有js后缀名的文件
-var glob = require('C:/Users/Kaier/AppData/Local/Microsoft/TypeScript/2.9/node_modules/@types/glob')
+var glob = require('glob')
 // 页面模板
-var HtmlWebpackPlugin = require('C:/Users/Kaier/AppData/Local/Microsoft/TypeScript/2.9/node_modules/@types/html-webpack-plugin')
+var HtmlWebpackPlugin = require('html-webpack-plugin')
 // 取得相应的页面路径，因为之前的配置，所以是src文件夹下的pages文件夹
 var PAGE_PATH = path.resolve(__dirname, '../src/pages')
 // 用于做相应的merge处理
-var merge = require('C:/Users/Kaier/AppData/Local/Microsoft/TypeScript/2.9/node_modules/@types/webpack-merge')
+var merge = require('webpack-merge')
+
 
 //多入口配置
 // 通过glob模块读取pages文件夹下的所有对应文件夹下的js后缀文件，如果该文件存在
