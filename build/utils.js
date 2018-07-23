@@ -29,7 +29,8 @@ exports.cssLoaders = function (options) {
       sourceMap: options.sourceMap
     }
   }
-
+  
+  // px自动转rem
   const px2remLoader = {
     loader: 'px2rem-loader',
     options:{
@@ -39,7 +40,7 @@ exports.cssLoaders = function (options) {
 
   // generate loader string to be used with extract text plugin
   function generateLoaders (loader, loaderOptions) {
-    const loaders = options.usePostCSS ? [cssLoader] : [cssLoader,px2remLoader,postcssLoader]
+    const loaders = options.usePostCSS ? [cssLoader,px2remLoader] : [cssLoader,px2remLoader,postcssLoader]
 
     if (loader) {
       loaders.push({
@@ -55,7 +56,8 @@ exports.cssLoaders = function (options) {
     if (options.extract) {
       return ExtractTextPlugin.extract({
         use: loaders,
-        fallback: 'vue-style-loader'
+        fallback: 'vue-style-loader',
+        publicPath: '../../'
       })
     } else {
       return ['vue-style-loader'].concat(loaders)
@@ -109,23 +111,22 @@ exports.createNotifierCallback = () => {
 }
 
 // glob是webpack安装时依赖的一个第三方模块，还模块允许你使用 *等符号, 例如lib/*.js就是获取lib文件夹下的所有js后缀名的文件
-var glob = require('glob')
+let glob = require('glob')
 // 页面模板
-var HtmlWebpackPlugin = require('html-webpack-plugin')
-// 取得相应的页面路径，因为之前的配置，所以是src文件夹下的pages文件夹
-var PAGE_PATH = path.resolve(__dirname, '../src/pages')
+let HtmlWebpackPlugin = require('html-webpack-plugin')
+// 取得相应的页面路径，src文件夹下的multiple文件夹
+let PAGE_PATH = path.resolve(__dirname, '../src/multiple')
 // 用于做相应的merge处理
-var merge = require('webpack-merge')
+let merge = require('webpack-merge')
 
 
 //多入口配置
-// 通过glob模块读取pages文件夹下的所有对应文件夹下的js后缀文件，如果该文件存在
-// 那么就作为入口处理
+// 通过glob模块读取multiple文件夹下的所有对应文件夹下的js后缀文件，如果该文件存在 , 那么就作为入口处理
 exports.entries = function() {
-  var entryFiles = glob.sync(PAGE_PATH + '/*/*.js')
-  var map = {}
+  let entryFiles = glob.sync(PAGE_PATH + '/*.js')
+  let map = {}
   entryFiles.forEach((filePath) => {
-    var filename = filePath.substring(filePath.lastIndexOf('\/') + 1, filePath.lastIndexOf('.'))
+    let filename = filePath.substring(filePath.lastIndexOf('\/') + 1, filePath.lastIndexOf('.'))
     map[filename] = filePath
   })
   return map
@@ -133,31 +134,62 @@ exports.entries = function() {
 
 //多页面输出配置
 // 与上面的多页面入口配置相同，读取pages文件夹下的对应的html后缀文件，然后放入数组中
-exports.htmlPlugin = function() {
-  let entryHtml = glob.sync(PAGE_PATH + '/*/*.html')
-  let arr = []
-  entryHtml.forEach((filePath) => {
-    let filename = filePath.substring(filePath.lastIndexOf('\/') + 1, filePath.lastIndexOf('.'))
-    let conf = {
-      // 模板来源
-      template: filePath,
-      // 文件名称
-      filename: filename + '.html',
-      // 页面模板需要加对应的js脚本，如果不加这行则每个页面都会引入所有的js脚本
-      chunks: ['manifest', 'vendor', filename],
-      inject: true
-    }
-    if (process.env.NODE_ENV === 'production') {
-      conf = merge(conf, {
-        minify: {
-          removeComments: true,
-          collapseWhitespace: true,
-          removeAttributeQuotes: true
-        },
-        chunksSortMode: 'dependency'
-      })
-    }
-    arr.push(new HtmlWebpackPlugin(conf))
-  })
-  return arr
+/**
+ * @param {string} optional //传 则指定加载某页, 不传则加载所有
+*/
+exports.htmlPlugin = function(optional) {
+    let SRC_PATH = path.resolve(__dirname,'../src')
+    let arr = []
+    let entryHtml = glob.sync(SRC_PATH + '/index.html')
+    let mainfiles = glob.sync(PAGE_PATH + '/*.js')
+    mainfiles.forEach((filePath,index)=>{
+      let filename = filePath.substring(filePath.lastIndexOf('\/') + 1, filePath.lastIndexOf('.'))
+      // console.log(filename)
+      if(optional){
+        if(filename!==optional) {return}
+        let conf = {
+          // 模板来源
+          template: entryHtml[0],
+          // 文件名称
+          filename: filename + '.html',
+          // 页面模板需要加对应的js脚本，如果不加这行则每个页面都会引入所有的js脚本
+          chunks: ['manifest', 'vendor', filename],
+          inject: true
+        }
+        if (process.env.NODE_ENV === 'production') {
+          conf = merge(conf, {
+            minify: {
+              removeComments: true,
+              collapseWhitespace: true,
+              removeAttributeQuotes: true
+            },
+            chunksSortMode: 'dependency'
+          })
+        }
+        arr.push(new HtmlWebpackPlugin(conf))
+      }else{
+        let conf = {
+            // 模板来源
+            template: entryHtml[0],
+            // 文件名称
+            filename: filename + '.html',
+            // 页面模板需要加对应的js脚本，如果不加这行则每个页面都会引入所有的js脚本
+            chunks: ['manifest', 'vendor', filename],
+            inject: true
+        }
+        if (process.env.NODE_ENV === 'production') {
+              conf = merge(conf, {
+                minify: {
+                  removeComments: true,
+                  collapseWhitespace: true,
+                  removeAttributeQuotes: true
+                },
+                chunksSortMode: 'dependency'
+              })
+        }
+        arr.push(new HtmlWebpackPlugin(conf))
+      }
+    })
+    return arr
 }
+

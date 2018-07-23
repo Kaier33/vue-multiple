@@ -1,4 +1,10 @@
 # xcx_app_vue_mul
+目录结构: 
+   assets:         资源文件汇总
+   components:     组件
+   pages:          主页
+
+
 
 > A Vue.js project
 

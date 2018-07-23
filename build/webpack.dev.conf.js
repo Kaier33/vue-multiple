@@ -10,6 +10,11 @@ const HtmlWebpackPlugin = require('html-webpack-plugin')
 const FriendlyErrorsPlugin = require('friendly-errors-webpack-plugin')
 const portfinder = require('portfinder')
 
+/**
+ * @param {string} optional //传 则指定加载某页, 不传则加载所有
+*/
+const filesArr = utils.htmlPlugin('test');
+
 const HOST = process.env.HOST
 const PORT = process.env.PORT && Number(process.env.PORT)
 
@@ -65,7 +70,7 @@ const devWebpackConfig = merge(baseWebpackConfig, {
         ignore: ['.*']
       }
     ])
-  ].concat(utils.htmlPlugin())
+  ].concat(filesArr)
 })
 
 module.exports = new Promise((resolve, reject) => {
@@ -78,7 +83,8 @@ module.exports = new Promise((resolve, reject) => {
       process.env.PORT = port
       // add port to devServer config
       devWebpackConfig.devServer.port = port
-
+      // 指定打开页面
+      devWebpackConfig.devServer.openPage = filesArr[0]['options']['filename']+'#/'
       // Add FriendlyErrorsPlugin
       devWebpackConfig.plugins.push(new FriendlyErrorsPlugin({
         compilationSuccessInfo: {
